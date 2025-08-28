@@ -1,0 +1,124 @@
+1. How to exit Vim safely
+
+If you just want to quit without saving (abort the commit):
+
+Press Esc
+
+Type:
+
+:q!
+
+
+then press Enter
+
+If you want to write a commit message and save:
+
+Press i → now you’re in insert mode
+
+Type your commit message (first line is the title, optional extra lines for description)
+
+Press Esc
+
+Type:
+
+:wq
+
+
+then press Enter
+
+That will save the message and finish the commit.
+
+2. git setup
+
+One-time setup (if you haven’t done this on the machine)
+git config --global user.name "Your Name"
+git config --global user.email "you@example.com"
+
+If this folder is NOT yet a Git repo
+cd /path/to/your/project
+git init                         # create .git (local repo)
+echo "node_modules/" >> .gitignore   # optional: ignore junk
+git status
+
+Stage → Commit (local)
+git add .                        # put changes into the staging area
+# tip: add specific files with: git add file1 file2
+git status                       # confirm what's staged
+git commit -m "Initial commit"   # save to local repo (avoid opening Vim)
+
+Connect a remote (e.g., GitHub/GitLab/Bitbucket)
+
+Create an empty repo on the hosting site (don’t add a README if you want a clean first push).
+
+Grab its URL (HTTPS or SSH), then:
+
+git branch -M main                              # optional: ensure branch is 'main'
+git remote add origin <REMOTE_URL>              # e.g. https://github.com/user/repo.git
+git remote -v                                   # verify
+
+Push to the remote
+git push -u origin main     # first push sets upstream; later you can just `git push`
+
+Daily workflow after that
+git status
+git add -A                                   # stage all changes (new/modified/deleted)
+git commit -m "Describe what you changed"    # commit to local repo
+git push                                     # send to remote (origin <current branch>)
+
+3. moving through git:
+
+On your work laptop:
+
+You’ve already done:
+
+git add .
+git commit -m "Some progress"
+git push origin main
+
+
+✅ Now your work is safely in the remote repo (GitHub/GitLab/Bitbucket).
+
+On your home laptop (where you want to continue):
+
+You don’t use a Pull Request (that’s for merging code between branches, usually in teams).
+What you want is just to pull down your latest code.
+
+Case A: You don’t have the repo on your home laptop yet
+git clone <REMOTE_URL>
+cd <repo-name>
+
+
+This gives you the whole project with history.
+
+Case B: You already cloned it before at home
+
+Then you just need to update it:
+
+cd /path/to/your/local/repo
+git pull origin main
+
+
+Now your home repo is in sync with the remote → which already had your latest commits from work.
+
+Then you keep coding
+
+Make changes on your home laptop
+
+git add .
+
+git commit -m "More progress"
+
+git push
+
+When you go back to work the next day, just:
+
+git pull origin main
+
+
+to bring those home commits into your work laptop repo.
+
+✅ So the rule of thumb is:
+
+Push from the machine where you made changes.
+
+Pull on the other machine before starting new work.
