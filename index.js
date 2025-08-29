@@ -9,7 +9,7 @@ const API_URL = "https://secrets-api.appbrewery.com/";
 //lienadsa247 password_key
 const yourUsername = "daniel aliyu";
 const yourPassword = "soprinye";
-const yourAPIKey = "";
+const yourAPIKey = "e3ee0521-0c6d-40a3-a7a1-5c325d2bb49d";
 const yourBearerToken = "";
 
 app.get("/", (req, res) => {
@@ -26,7 +26,7 @@ app.get("/noAuth", async (req, res) => {
 });
 
 
-app.get("/basicAuth", (req, res) => {
+app.get("/basicAuth", async (req, res) => {
   //TODO 3: Write your code here to hit up the /all endpoint
   //Specify that you only want the secrets from page 2
   //HINT: This is how you can use axios to do basic auth:
@@ -39,22 +39,42 @@ app.get("/basicAuth", (req, res) => {
       },
     });
   */
-
-    axios.get(API_URL + "all?page=2", {
+    try {
+   const result = await axios.get(API_URL + "all?page=2", {
       auth: {
         username: yourUsername,
         password: yourPassword,
       },
     });
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+   } catch (error) {
+    res.status(404).send(error.message);
+  }
+    
+
 });
 
-app.get("/apiKey", (req, res) => {
+app.get("/apiKey", async (req, res) => {
   //TODO 4: Write your code here to hit up the /filter endpoint
   //Filter for all secrets with an embarassment score of 5 or greater
   //HINT: You need to provide a query parameter of apiKey in the request.
+      try {
+   const result = await axios.get(API_URL + `filter?score=5&apiKey=${yourAPIKey}`);
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+   } catch (error) {
+    res.status(404).send(error.message);
+  }
+    
+
 });
 
-app.get("/bearerToken", (req, res) => {
+app.get("/bearerToken", async (req, res) => {
+
+   const result = await axios.post(API_URL + "/get-auth-token", {
+    username: yourUsername,
+    password:  yourPassword,
+   })
+   console.log(result.data);
   //TODO 5: Write your code here to hit up the /secrets/{id} endpoint
   //and get the secret with id of 42
   //HINT: This is how you can use axios to do bearer token auth:
